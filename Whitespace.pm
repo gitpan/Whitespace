@@ -2,8 +2,20 @@ package Whitespace;
 use strict;
 
 #
-# $Id: Whitespace.pm,v 1.2 2001/05/17 15:14:46 rv Exp $
+# $Id: Whitespace.pm,v 1.4 2001/05/23 21:36:50 rv Exp $
 #
+
+BEGIN {
+    use Exporter ();
+    our ($VERSION, @ISA, @EXPORT, @EXPORT_OK, %EXPORT_TAGS);
+
+    $VERSION = 1.02;
+    @ISA = qw(Exporter);
+    @EXPORT = qw(&new &detect &cleanup &error &status);
+    @EXPORT_OK = qw(&leadclean &trailclean &indentclean &spacetabclean
+		    &eolclean &DESTROY);
+    %EXPORT_TAGS = ();
+}
 
 =head1 NAME
 
@@ -71,8 +83,6 @@ returned if there was an error writing the file.
     $eolstat = $env->eolclean();
 
 =cut
-
-my $VERSION = '1.01';
 
 #
 # Exported Functions
@@ -391,11 +401,24 @@ sub _spctabclean {
     my @ret = ();
     foreach (@_) {
 	while (/ \t/) {
-	    $_ =~ s/ \t/\t/g;
+	    s/ \t/_brinkoftabstop($`) ? "\t\t" : "\t"/eg;
 	}
 	push @ret, $_;
     }
     return @ret;
+}
+
+#
+# This sub ensures that while cleaning space-followed-by-TAB issues,
+# we don't blindly cleanup at tab boundaries.
+#
+# For instance, "1234567 \t" should change to "1234567\t\t" and not to
+# "1234567\t", which would not look the same as the original.
+#
+sub _brinkoftabstop {
+    my $s = shift;
+    $s =~ s/.*\t//;
+    return length($s) % 8 == 7;
 }
 
 1;
