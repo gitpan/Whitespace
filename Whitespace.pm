@@ -2,8 +2,9 @@ package Whitespace;
 use strict;
 
 #
-# $Id: Whitespace.pm,v 1.4 2001/05/11 19:09:53 rv Exp $
+# $Id: Whitespace.pm,v 1.2 2001/05/17 15:14:46 rv Exp $
 #
+
 =head1 NAME
 
 Whitespace - Cleanup various types of bogus whitespace in source files.
@@ -71,7 +72,7 @@ returned if there was an error writing the file.
 
 =cut
 
-my $VERSION = '1.00';
+my $VERSION = '1.01';
 
 #
 # Exported Functions
